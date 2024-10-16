@@ -1,66 +1,209 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Challenge PHP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+El desafío es integrarse a una API existente y desarrollar una API REST propia que exponga un conjunto de servicios. Asimismo se
+deberán entregar distintos diagramas que representen la solución.
 
-## About Laravel
+## Casos de Uso
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Registro de Usuario
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Endpoint**: `POST /api/register`
+- **Descripción**: Permite a un nuevo usuario registrarse en el sistema.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Datos de Entrada
 
-## Learning Laravel
+- `name`: String (requerido)
+- `email`: String (requerido, único)
+- `password`: String (requerido)
+- `confirm_password`: String (requerido)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Flujo
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. El usuario envía una solicitud con los datos.
+2. La API valida los datos:
+    - Si el correo ya existe o la contraseña no cumple con los requisitos, se devuelve un error.
+3. Si los datos son válidos, se crea el usuario y se devuelve un mensaje de éxito.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Respuesta Exitosa
 
-## Laravel Sponsors
+- **Código**: `200`
+- **Cuerpo**:
+  ```json
+  {
+    "success": true,
+    "data": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMGVmNmU3NmFiYzU0NGQ0YzdhNWYyODg2MmM4MzFlYmY1YjA4ODgzYWI2OWZlOGEzZTc0NDJkM2QxMjAxNzU4ZTBlYjA5ZTVlM2FhYjNiMDAiLCJpYXQiOjE3MjkxMDkwMzEuNDc2NzQ0LCJuYmYiOjE3MjkxMDkwMzEuNDc2NzQ1LCJleHAiOjE3MjkxMTA4MzEuNDcyMzE1LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.p6aR2EET08SPPLaGgH9rlTVWdLDl10zcmGdXU-HialWcff8_1L2qN9R5BoM1AcRkV9RuLTYI06SZjGjIq3sorXfHrsBhCGbEDBMAHp1moj4C7uO3KhRBo-ApdSddigaCOmvXb3eEBT4Am7J1FPj2Oefpe5CbIfNpSLwQ8Lo2BhOVEi4H2WUn-AOE_oM8xwWT63zMjVaxHFUi1Tb9NuIJ2mrhPlyitWCp9LWvNO4fxtp4yKuGxKKxboeXxOBFERq3olIo8Y1-_SRbrSfS9eiVDk-KMnZWrXUEa67-7tAywGdne6AikxbiPlPRB2TIMUkygsi7duFvFL88s-EKIPchkKb8W-H9SEslHYqNIiswsbtKSDDCGrayw81PHokJsGx0Ie-aI1Z_IucT_Q_-RBZuiQYPV54uVcNIMwTgpWAk--nWYZjoVSjjAczBem4UgN7hFcmimLLg-ltTbGAyiyU7vKYvXn-kj4HyxZ2H7WC9fuuqWu26iJc38oJzgkitI1-UFGKA_t2yx-xVeT4kQGI4thkYZ2v4wX-_6ZiZvGMFfg3NXS2BunzesACXmBzqrjmGKH8S-z9BqnBdpwmZa2-d_g74oM9844OXvKmoopQuUUDRZ39nROpITcDmDCBAO9hygqVsfqdPZsswWvor6UwvXNOCkCvcIkhiMV-IZt2e4as",
+        "expires_in": "00:29:59",
+        "name": "facundo"
+    },
+    "message": "User register successfully."
+  }
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Login de Usuario
 
-### Premium Partners
+- **Endpoint**: `POST /api/login`
+- **Descripción**: Permite a un usuario existente iniciar sesión en el sistema utilizando su nombre de usuario y contraseña y obtener un token de acceso.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+#### Datos de Entrada
 
-## Contributing
+- `email`: String (requerido)
+- `password`: String (requerido)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Flujo
 
-## Code of Conduct
+1. El usuario envía una solicitud con los datos.
+2. La API valida los datos:
+    - Si las credenciales son invalidas, se devuelve un error.
+3. Si los datos son válidos, se devuelve un mensaje de éxito.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Respuesta Exitosa
 
-## Security Vulnerabilities
+- **Código**: `200`
+- **Cuerpo**:
+  ```json
+  {
+    "success": true,
+    "data": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMGVmNmU3NmFiYzU0NGQ0YzdhNWYyODg2MmM4MzFlYmY1YjA4ODgzYWI2OWZlOGEzZTc0NDJkM2QxMjAxNzU4ZTBlYjA5ZTVlM2FhYjNiMDAiLCJpYXQiOjE3MjkxMDkwMzEuNDc2NzQ0LCJuYmYiOjE3MjkxMDkwMzEuNDc2NzQ1LCJleHAiOjE3MjkxMTA4MzEuNDcyMzE1LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.p6aR2EET08SPPLaGgH9rlTVWdLDl10zcmGdXU-HialWcff8_1L2qN9R5BoM1AcRkV9RuLTYI06SZjGjIq3sorXfHrsBhCGbEDBMAHp1moj4C7uO3KhRBo-ApdSddigaCOmvXb3eEBT4Am7J1FPj2Oefpe5CbIfNpSLwQ8Lo2BhOVEi4H2WUn-AOE_oM8xwWT63zMjVaxHFUi1Tb9NuIJ2mrhPlyitWCp9LWvNO4fxtp4yKuGxKKxboeXxOBFERq3olIo8Y1-_SRbrSfS9eiVDk-KMnZWrXUEa67-7tAywGdne6AikxbiPlPRB2TIMUkygsi7duFvFL88s-EKIPchkKb8W-H9SEslHYqNIiswsbtKSDDCGrayw81PHokJsGx0Ie-aI1Z_IucT_Q_-RBZuiQYPV54uVcNIMwTgpWAk--nWYZjoVSjjAczBem4UgN7hFcmimLLg-ltTbGAyiyU7vKYvXn-kj4HyxZ2H7WC9fuuqWu26iJc38oJzgkitI1-UFGKA_t2yx-xVeT4kQGI4thkYZ2v4wX-_6ZiZvGMFfg3NXS2BunzesACXmBzqrjmGKH8S-z9BqnBdpwmZa2-d_g74oM9844OXvKmoopQuUUDRZ39nROpITcDmDCBAO9hygqVsfqdPZsswWvor6UwvXNOCkCvcIkhiMV-IZt2e4as",
+        "expires_in": "00:29:59",
+        "name": "facundo"
+    },
+    "message": "User login successfully."
+  }
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Buscar Gifs
 
-## License
+- **Endpoint**: `GET /api/gifs/search`
+- **Descripción**: Permite realizar búsquedas de GIFs en la API de Giphy utilizando una consulta de búsqueda, un límite de resultados y un desplazamiento. Devuelve una respuesta JSON con los resultados de la búsqueda o un mensaje de error si la búsqueda falla.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+#### Datos de Entrada
+
+La función acepta los siguientes parámetros de entrada a través de la solicitud:
+
+- **`query`**: (String, requerido) La consulta de búsqueda para los GIFs. Por defecto es una cadena vacía (`''`).
+- **`limit`**: (Integer, opcional) El número máximo de GIFs a devolver. Por defecto es `10`.
+- **`offset`**: (Integer, opcional) El desplazamiento para la paginación de resultados. Por defecto es `0`.
+
+#### Flujo
+
+1. **Recepción de Parámetros**:
+    - La función recibe una solicitud HTTP GET que puede incluir los siguientes parámetros:
+        - `query` (String, opcional): La consulta de búsqueda.
+        - `limit` (Integer, opcional): Número máximo de resultados a devolver.
+        - `offset` (Integer, opcional): Desplazamiento para la paginación.
+
+2. **Configuración de Parámetros por Defecto**:
+    - Si no se proporciona `query`, se establece como una cadena vacía (`''`).
+    - Si no se proporciona `limit`, se establece en `10`.
+    - Si no se proporciona `offset`, se establece en `0`.
+
+3. **Construcción de la URL de la API de Giphy**:
+    - Se crea una URL utilizando la base de URL de Giphy, la clave de API y los parámetros de búsqueda, límite y desplazamiento.
+    - **Ejemplo de URL construida**:
+      ```
+      https://api.giphy.com/v1/gifs/search/tags?api_key=YOUR_API_KEY&q=feliz&limit=5&offset=0
+      ```
+
+4. **Llamada a la API de Giphy**:
+    - Se realiza una solicitud GET a la URL construida.
+
+5. **Manejo de la Respuesta**:
+    - **Respuesta Exitosa**:
+        - Si la respuesta es exitosa (código de estado 200):
+            - Se devuelve un objeto JSON con el resultado de la búsqueda y un mensaje de éxito.
+    - **Respuesta de Error**:
+        - Si la respuesta falla (código de estado diferente de 200):
+            - Se devuelve un objeto JSON con un mensaje de error y un código de estado 500.
+
+6. **Devolución de Resultados**:
+    - La función devuelve la respuesta adecuada (ya sea la lista de GIFs o un mensaje de error) al cliente que realizó la solicitud.
+
+#### Ejemplo de Solicitud
+GET /api/gifs/search?query=feliz&limit=5&offset=0
+
+#### Respuesta Exitosa
+
+- **Código**: `200`
+- **Cuerpo**:
+  ```json
+  {
+    "success": true,
+    "data": {
+        "data": [
+            {
+                "name": "pokemon birthday",
+                "analytics_response_payload": "e=ZXZlbnRfdHlwZT1UQUdfU0VBUkNIJmNpZD1mMTYzMTZlNXo1YnF5Mmd3azBrYjcwbXE4NDd2czFyN2pnbmlyczJ3NHB6MG92bnUmbmFtZT1wb2tlbW9uK2JpcnRoZGF5JnE9cG9rZW1vbg"
+            },
+            {
+                "name": "pokemon go",
+                "analytics_response_payload": "e=ZXZlbnRfdHlwZT1UQUdfU0VBUkNIJmNpZD1mMTYzMTZlNXo1YnF5Mmd3azBrYjcwbXE4NDd2czFyN2pnbmlyczJ3NHB6MG92bnUmbmFtZT1wb2tlbW9uK2dvJnE9cG9rZW1vbg"
+            },
+            {
+                "name": "pokemon cards",
+                "analytics_response_payload": "e=ZXZlbnRfdHlwZT1UQUdfU0VBUkNIJmNpZD1mMTYzMTZlNXo1YnF5Mmd3azBrYjcwbXE4NDd2czFyN2pnbmlyczJ3NHB6MG92bnUmbmFtZT1wb2tlbW9uK2NhcmRzJnE9cG9rZW1vbg"
+            }
+        ],
+        "meta": {
+            "status": 200,
+            "msg": "OK",
+            "response_id": "z5bqy2gwk0kb70mq847vs1r7jgnirs2w4pz0ovnu"
+        },
+        "pagination": {
+            "total_count": 3,
+            "count": 3,
+            "offset": 0
+        }
+    },
+    "message": "Búsqueda realizada con éxito"
+}
+
+### Buscar Gif por ID
+
+#### Descripción
+Permite obtener un GIF específico de la API de Giphy utilizando su identificador único. Devuelve una respuesta JSON con los detalles del GIF o un mensaje de error si el GIF no se encuentra.
+
+#### Endpoint
+- **Método HTTP**: `GET`
+- **URL**: `/api/gifs/{id}`
+
+#### Parámetros de Entrada
+La función acepta el siguiente parámetro de entrada a través de la URL:
+
+- **`id`**: (Requerido, String) El identificador único del GIF que se desea obtener.
+
+#### Ejemplo de Solicitud
+GET /api/gifs/xo23psl2o4k5
+
+#### Flujo
+
+1. **Recepción del Parámetro**:
+    - La función recibe el identificador del GIF a través de la URL.
+
+2. **Construcción de la URL de la API de Giphy**:
+    - Se crea una URL utilizando la base de URL de Giphy y el identificador del GIF.
+    - **Ejemplo de URL construida**:
+      ```
+      https://api.giphy.com/v1/gifs/{id}?api_key=YOUR_API_KEY
+      ```
+
+3. **Llamada a la API de Giphy**:
+    - Se realiza una solicitud GET a la URL construida.
+
+4. **Manejo de la Respuesta**:
+    - **Respuesta Exitosa**:
+        - Si la respuesta es exitosa (código de estado 200):
+            - Se devuelve un objeto JSON con los detalles del GIF.
+    - **Respuesta de Error**:
+        - Si la respuesta falla (código de estado 404):
+            - Se devuelve un objeto JSON con un mensaje de error indicando que el GIF no fue encontrado.
+
+5. **Devolución de Resultados**:
+    - La función devuelve la respuesta adecuada (ya sea los detalles del GIF o un mensaje de error) al cliente que realizó la solicitud.
+
+
+## DER
+![Diagrama Entidad Relacion](storage/app/public/DER-prex.png)
+
+## Diagrama de Secuencia
+![Diagrama_de_secuencia](storage/app/public/Secuencia-prex.png)
