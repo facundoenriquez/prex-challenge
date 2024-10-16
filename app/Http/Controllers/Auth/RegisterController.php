@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -21,18 +21,22 @@ class RegisterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ]);
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] = $user->createToken('MyApp')->accessToken;
-        $success['name'] = $user->name;
 
+        $tokenResult = $user->createToken('MyApp');
+        $token = $tokenResult->accessToken;
+        $expiration = $tokenResult->token->expires_at;
+
+        $formattedExpiration = $expiration->diff(now())->format('%H:%I:%S');
+
+        $success['token'] = $token;
+        $success['expires_in'] = $formattedExpiration;
+        $success['name'] = $user->name;
         return $this->sendResponse($success, 'User register successfully.');
     }
 
@@ -40,10 +44,17 @@ class RegisterController extends Controller
     {
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('MyApp')->accessToken;
+            $tokenResult = $user->createToken('MyApp');
+            $token = $tokenResult->accessToken;
+            $expiration = $tokenResult->token->expires_at;
+
+            $formattedExpiration = $expiration->diff(now())->format('%H:%I:%S');
+
+            $success['token'] = $token;
+            $success['expires_in'] = $formattedExpiration;
             $success['name'] = $user->name;
             return $this->sendResponse($success, 'User login successfully.');
-        }else{
+        } else {
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
     }

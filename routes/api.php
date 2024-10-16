@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +17,11 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::post('register', [\App\Http\Controllers\API\RegisterController::class, 'register']);
-Route::post('login', [\App\Http\Controllers\API\RegisterController::class, 'login']);
+Route::post('register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+Route::post('login', [\App\Http\Controllers\Auth\RegisterController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-   Route::resource('products', \App\Http\Controllers\API\ProductController::class);
+    Route::get('gifs/search', [\App\Http\Controllers\GifController::class, 'searchGifs']);
+    Route::get('gif/{id}', [\App\Http\Controllers\GifController::class, 'getGifById']);
+    Route::post('favorites', [\App\Http\Controllers\GifController::class, 'StoreFavoriteGif']);
 });
